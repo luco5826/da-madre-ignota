@@ -1,0 +1,11 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    volumes:
+      - "${PWD}/db/scripts/:/docker-entrypoint-initdb.d/"
+      - "${PWD}/db/data/:/var/lib/postgresql/data/"
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=changeme"
