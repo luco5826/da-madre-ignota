@@ -2,7 +2,7 @@
   import { Button, Card, CardBody, CardFooter } from "sveltestrap";
 
   export let entryName, entryDescription, onQuantityChange;
-  let quantity = 0;
+  export let quantity = 0;
 
   function handleClick(value) {
     quantity = quantity + value;

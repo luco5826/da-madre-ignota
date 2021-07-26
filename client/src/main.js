@@ -1,10 +1,7 @@
-import App from "./App.svelte";
+import MainPage from "./components/MainPage.svelte";
 
-const app = new App({
+const app = new MainPage({
   target: document.body,
-  props: {
-    // name: "asd",
-  },
 });
 
 export default app;
