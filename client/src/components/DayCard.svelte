@@ -5,7 +5,7 @@
   export let day, availList;
   export let onBaseQuantityChange;
 
-  let isOpen = false;
+  export let isOpen = false;
 </script>
 
 <Card class="mt-4" color="dark">

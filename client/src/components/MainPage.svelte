@@ -15,7 +15,8 @@
   let byProduct = {};
   let showCartIcon = false,
     showModal = false,
-    showAlert = false;
+    showAlert = false,
+    closeAllCards = true;
 
   onMount(async () => {
     menuAvail = await API.getAvailability();
@@ -36,6 +37,7 @@
     showAlert = true;
     setTimeout(() => location.reload(), 2000);
   }
+
   // Show cart icon whenever there's at least something in the cart
   $: showCartIcon = menuAvail.filter((m) => m.quantity > 0).length > 0;
 </script>
@@ -46,19 +48,29 @@
     <Alert color="success">Grazie per aver ordinato!</Alert>
   {/if}
 
-  <TabContent>
+  <TabContent
+    on:tab={(e) => {
+      // Ugly workaround for svelte to re-set the isOpen prop to the cards
+      // Without this, svelte would not detect any change and not reset the
+      // cards' state
+      closeAllCards = false;
+      closeAllCards = true;
+    }}
+  >
     <TabPane tabId="days" tab="Giorni" active>
       {#each Object.keys(byDay).sort() as dayAvail}
         <DayCard
+          isOpen={!closeAllCards}
           day={formatDayEntry(dayAvail)}
           availList={byDay[dayAvail]}
           onBaseQuantityChange={changeQuantity}
         />
       {/each}
     </TabPane>
-    <TabPane tabId="products" tab="Prodotti" active>
+    <TabPane tabId="products" tab="Prodotti">
       {#each Object.keys(byProduct).sort() as productAvail}
         <ProductCard
+          isOpen={!closeAllCards}
           product={productAvail}
           availList={byProduct[productAvail]}
           onBaseQuantityChange={changeQuantity}
