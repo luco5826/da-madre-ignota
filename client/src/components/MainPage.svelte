@@ -48,9 +48,8 @@
 
   <TabContent>
     <TabPane tabId="days" tab="Giorni" active>
-      {#each Object.keys(byDay).sort() as dayAvail, index}
+      {#each Object.keys(byDay).sort() as dayAvail}
         <DayCard
-          {index}
           day={formatDayEntry(dayAvail)}
           availList={byDay[dayAvail]}
           onBaseQuantityChange={changeQuantity}
@@ -58,9 +57,8 @@
       {/each}
     </TabPane>
     <TabPane tabId="products" tab="Prodotti" active>
-      {#each Object.keys(byProduct).sort() as productAvail, index}
+      {#each Object.keys(byProduct).sort() as productAvail}
         <ProductCard
-          {index}
           product={productAvail}
           availList={byProduct[productAvail]}
           onBaseQuantityChange={changeQuantity}
