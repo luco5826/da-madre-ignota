@@ -3,12 +3,11 @@
   import { scale } from "svelte/transition";
   import IoMdCart from "svelte-icons/io/IoMdCart.svelte";
 
-  import DayCard from "./DayCard.svelte";
-  import ProductCard from "./ProductCard.svelte";
   import * as API from "../API";
   import { formatDayEntry, groupByDay, groupByProduct } from "../Utils";
   import { onMount } from "svelte";
   import CheckoutModal from "./CheckoutModal.svelte";
+  import ElementCard from "./ElementCard.svelte";
 
   let menuAvail = [];
   let byDay = {};
@@ -59,9 +58,10 @@
   >
     <TabPane tabId="days" tab="Giorni" active>
       {#each Object.keys(byDay).sort() as dayAvail}
-        <DayCard
+        <ElementCard
           isOpen={!closeAllCards}
-          day={formatDayEntry(dayAvail)}
+          title={formatDayEntry(dayAvail)}
+          type="day"
           availList={byDay[dayAvail]}
           onBaseQuantityChange={changeQuantity}
         />
@@ -69,9 +69,10 @@
     </TabPane>
     <TabPane tabId="products" tab="Prodotti">
       {#each Object.keys(byProduct).sort() as productAvail}
-        <ProductCard
+        <ElementCard
           isOpen={!closeAllCards}
-          product={productAvail}
+          title={productAvail}
+          type="product"
           availList={byProduct[productAvail]}
           onBaseQuantityChange={changeQuantity}
         />

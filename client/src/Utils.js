@@ -50,7 +50,6 @@ function isValidEmail(email) {
 }
 
 export {
-  daysOfWeek,
   groupByDay,
   groupByProduct,
   formatDayEntry,
