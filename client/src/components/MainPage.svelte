@@ -28,9 +28,11 @@
     found.quantity = quantity;
     menuAvail = [...menuAvail];
   }
-  function onCompleteOrder(userInfos) {
+  async function onCompleteOrder(userInfos) {
     showModal = false;
-    // TODO: Call API
+
+    await API.sendOrder({ products: menuAvail, user: userInfos });
+
     showAlert = true;
     setTimeout(() => location.reload(), 2000);
   }

@@ -39,4 +39,21 @@ function formatDayEntry(dayEntry) {
   ${dayjs(dayEntry).format("DD/MM")}`;
 }
 
-export { daysOfWeek, groupByDay, groupByProduct, formatDayEntry };
+function isNullOrEmpty(str) {
+  return str === undefined || str === null || str === "";
+}
+
+function isValidEmail(email) {
+  const test =
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+  return test.test(email);
+}
+
+export {
+  daysOfWeek,
+  groupByDay,
+  groupByProduct,
+  formatDayEntry,
+  isNullOrEmpty,
+  isValidEmail,
+};

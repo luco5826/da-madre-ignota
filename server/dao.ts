@@ -12,6 +12,19 @@ type MenuAvailability = {
   menu_id: number;
   entry?: MenuEntry;
   day: dayjs.Dayjs;
+  quantity?: number;
+};
+
+type UserInfos = {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+};
+
+type Order = {
+  products: MenuAvailability[];
+  user: UserInfos;
 };
 
 const addMenuEntry = async (menuEntry: MenuEntry) => {
@@ -76,4 +89,31 @@ const getAvailableMenu = async (
   }
 };
 
-export { addMenuEntry, getAvailableMenu, addMenuAvailability };
+const placeOrder = async (order: Order) => {
+  // Insert the customer
+  // TODO: Do not insert customer if it already exists
+  const userResult = await db.one<{ id: number }>(
+    `INSERT INTO CUSTOMERS(id, name, phone_no, email) 
+    VALUES(DEFAULT, $1, $2, $3) 
+    RETURNING id`,
+    [order.user.name, order.user.phone, order.user.email]
+  );
+
+  // Insert orders in a transaction
+  await db.tx(async (transaction) => {
+    const queries = order.products
+      .filter((p) => p.quantity !== undefined && p.quantity > 0)
+      .map((product) => {
+        return transaction.none(
+          `INSERT INTO ORDERS(customer_id, avail_id, quantity) 
+          VALUES($1, $2, $3)`,
+          [userResult.id, product.id, product.quantity]
+        );
+      });
+    return transaction.batch(queries);
+  });
+
+  return { ok: true };
+};
+
+export { addMenuEntry, getAvailableMenu, addMenuAvailability, placeOrder };

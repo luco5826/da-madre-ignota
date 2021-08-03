@@ -40,6 +40,10 @@ app.get("/api/avail", async (req, res) => {
   res.json(await dao.getAvailableMenu(undefined, undefined));
 });
 
+app.post("/api/order", async (req, res) => {
+  res.json(await dao.placeOrder(req.body));
+});
+
 app.post("/api/login", passport.authenticate("local"), (req, res) => {
   res.json({ authenticated: true });
 });

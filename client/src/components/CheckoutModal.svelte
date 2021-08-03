@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
 
   import {
+    Alert,
     Button,
     Form,
     FormGroup,
@@ -12,11 +13,14 @@
     ModalFooter,
     ModalHeader,
   } from "sveltestrap";
+  import { isNullOrEmpty, isValidEmail } from "../Utils";
 
   export let open;
   export let toggleModal, onCompleteOrder;
 
   let userInfos = { name: "", email: "", phone: "" };
+  let formError = undefined;
+
   onMount(() => {
     const savedInfos = localStorage.getItem("userinfos");
     if (savedInfos) {
@@ -25,7 +29,19 @@
   });
 
   const completeOrder = () => {
-    // TODO: Form validation
+    if (
+      isNullOrEmpty(userInfos.name) ||
+      isNullOrEmpty(userInfos.email) ||
+      isNullOrEmpty(userInfos.phone)
+    ) {
+      formError = "Tutti i campi sono necessari";
+      return;
+    }
+
+    if (!isValidEmail(userInfos.email)) {
+      formError = "La mail inserita non è valida";
+      return;
+    }
 
     localStorage.setItem("userinfos", JSON.stringify(userInfos));
     onCompleteOrder(userInfos);
@@ -37,7 +53,7 @@
   <ModalBody>
     <Form>
       <FormGroup>
-        <Label>Nome e cognome</Label>
+        <Label>Nome e cognome<span class="text-danger mx-1">*</span></Label>
         <Input
           type="text"
           placeholder="Il tuo nome e cognome"
@@ -45,7 +61,7 @@
         />
       </FormGroup>
       <FormGroup>
-        <Label>Email</Label>
+        <Label>Email<span class="text-danger mx-1">*</span></Label>
         <Input
           type="email"
           placeholder="La tua email"
@@ -53,7 +69,7 @@
         />
       </FormGroup>
       <FormGroup>
-        <Label>Telefono</Label>
+        <Label>Telefono<span class="text-danger mx-1">*</span></Label>
         <Input
           type="text"
           placeholder="Il tuo numero di telefono"
@@ -61,6 +77,9 @@
         />
       </FormGroup>
     </Form>
+    {#if formError}
+      <Alert color="danger">{formError}</Alert>
+    {/if}
   </ModalBody>
   <ModalFooter>
     <Button color="secondary" on:click={toggleModal}>Annulla</Button>
