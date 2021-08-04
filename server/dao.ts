@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { Product, StoredProduct } from "./commonTypes";
 import db from "./database";
 
 type MenuEntry = {
@@ -89,6 +90,11 @@ const getAvailableMenu = async (
   }
 };
 
+const getProducts = async () => {
+  const query = `SELECT * FROM MENU M`;
+  return await db.manyOrNone(query).catch(console.error);
+};
+
 const placeOrder = async (order: Order) => {
   // Insert the customer
   // TODO: Do not insert customer if it already exists
@@ -116,4 +122,28 @@ const placeOrder = async (order: Order) => {
   return { ok: true };
 };
 
-export { addMenuEntry, getAvailableMenu, addMenuAvailability, placeOrder };
+const saveProduct = async (product: Product): Promise<StoredProduct> => {
+  const query = `
+  INSERT INTO MENU(name, description) 
+  VALUES($1, $2)
+  RETURNING id
+`;
+
+  const result = await db
+    .one<{ id: number }>(query, [product.name, product.description])
+    .catch(console.error);
+
+  const addedProduct: StoredProduct = {
+    id: result?.id || -1,
+    ...product,
+  };
+  return addedProduct;
+};
+export {
+  addMenuEntry,
+  getAvailableMenu,
+  getProducts,
+  addMenuAvailability,
+  placeOrder,
+  saveProduct,
+};

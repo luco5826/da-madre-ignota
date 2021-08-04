@@ -1,4 +1,9 @@
-import { Credentials, UserLoginInfo } from "./commonTypes";
+import {
+  Credentials,
+  Product,
+  StoredProduct,
+  UserLoginInfo,
+} from "./commonTypes";
 
 const login = async (credentials: Credentials): Promise<UserLoginInfo> => {
   const response = await fetch("/api/login", {
@@ -38,10 +43,28 @@ const logout = async () => {
   return response.status === 200;
 };
 
+const getProducts = async () => {
+  const response = await fetch("/api/products");
+  return response.json();
+};
+
+const saveProduct = async (newProd: Product): Promise<StoredProduct> => {
+  const response = await fetch("/api/product", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newProd),
+  });
+  return response.json();
+};
+
 const API = {
   login,
   isLogged,
   logout,
+  getProducts,
+  saveProduct,
 };
 
 export default API;

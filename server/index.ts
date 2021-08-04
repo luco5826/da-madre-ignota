@@ -44,6 +44,14 @@ app.post("/api/order", async (req, res) => {
   res.json(await dao.placeOrder(req.body));
 });
 
+app.get("/api/products", isAuth, async (req, res) => {
+  res.json(await dao.getProducts());
+});
+
+app.post("/api/product", isAuth, async (req, res) => {
+  res.json(await dao.saveProduct(req.body));
+});
+
 app.post("/api/login", passport.authenticate("local"), (req, res) => {
   res.json({ isLogged: true, user: {} });
 });

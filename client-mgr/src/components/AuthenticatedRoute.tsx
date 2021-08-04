@@ -4,8 +4,6 @@ import { AuthenticationContext } from "../Utils";
 
 const AuthenticatedRoute: React.FC = ({ children }) => {
   const loggedUser = useContext(AuthenticationContext);
-  console.log(loggedUser);
-
   return loggedUser.isLogged ? <>{children}</> : <Redirect to="/login" />;
 };
 
