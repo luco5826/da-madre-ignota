@@ -28,13 +28,11 @@ passport.serializeUser((user: any, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((user: any, done) => {
-  console.log("deserialize called");
-
+passport.deserializeUser((id: number, done) => {
   db.oneOrNone(
     `SELECT * 
      FROM USERS 
      WHERE id = $1`,
-    [user.id]
+    [id]
   ).then((row) => done(null, row));
 });

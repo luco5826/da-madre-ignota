@@ -45,11 +45,11 @@ app.post("/api/order", async (req, res) => {
 });
 
 app.post("/api/login", passport.authenticate("local"), (req, res) => {
-  res.json({ authenticated: true });
+  res.json({ isLogged: true, user: {} });
 });
 
 app.get("/api/islogged", isAuth, (req, res) => {
-  res.sendStatus(200);
+  res.json({ isLogged: true, user: {} });
 });
 
 app.listen(PORT, () => {
