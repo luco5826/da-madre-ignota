@@ -58,13 +58,36 @@ const saveProduct = async (newProd: Product): Promise<StoredProduct> => {
   });
   return response.json();
 };
-
+const updateProduct = async (
+  newProd: StoredProduct
+): Promise<StoredProduct> => {
+  const response = await fetch("/api/product", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newProd),
+  });
+  return response.json();
+};
+const deleteProduct = async (product: StoredProduct): Promise<boolean> => {
+  const response = await fetch("/api/product", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(product),
+  });
+  return response.json();
+};
 const API = {
   login,
   isLogged,
   logout,
   getProducts,
   saveProduct,
+  updateProduct,
+  deleteProduct,
 };
 
 export default API;

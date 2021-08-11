@@ -139,6 +139,32 @@ const saveProduct = async (product: Product): Promise<StoredProduct> => {
   };
   return addedProduct;
 };
+const updateProduct = async (
+  product: StoredProduct
+): Promise<StoredProduct> => {
+  const query = `
+  UPDATE MENU
+  SET name = $2, description = $3
+  WHERE id = $1
+`;
+
+  const result = await db
+    .none(query, [product.id, product.name, product.description])
+    .catch(console.error);
+
+  return product;
+};
+const deleteProduct = async (product: StoredProduct): Promise<boolean> => {
+  const query = `
+  DELETE FROM MENU
+  WHERE id = $1
+`;
+
+  const result = await db.none(query, [product.id]).catch(console.error);
+
+  return true;
+};
+
 export {
   addMenuEntry,
   getAvailableMenu,
@@ -146,4 +172,6 @@ export {
   addMenuAvailability,
   placeOrder,
   saveProduct,
+  updateProduct,
+  deleteProduct,
 };

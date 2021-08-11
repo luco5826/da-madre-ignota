@@ -51,6 +51,12 @@ app.get("/api/products", isAuth, async (req, res) => {
 app.post("/api/product", isAuth, async (req, res) => {
   res.json(await dao.saveProduct(req.body));
 });
+app.put("/api/product", isAuth, async (req, res) => {
+  res.json(await dao.updateProduct(req.body));
+});
+app.delete("/api/product", isAuth, async (req, res) => {
+  res.json(await dao.deleteProduct(req.body));
+});
 
 app.post("/api/login", passport.authenticate("local"), (req, res) => {
   res.json({ isLogged: true, user: {} });

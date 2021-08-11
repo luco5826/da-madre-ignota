@@ -1,7 +1,7 @@
 version: "3"
 services:
   db:
-    image: postgres
+    image: postgres:13.3
     volumes:
       - "${PWD}/db/scripts/:/docker-entrypoint-initdb.d/"
       - "${PWD}/db/data/:/var/lib/postgresql/data/"
