@@ -7,6 +7,7 @@ import { AuthenticationContext } from "./Utils";
 import API from "./API";
 import { UserLoginInfo } from "./commonTypes";
 import HomeView from "./views/HomeView";
+import AvailabilityView from "./views/AvailabilityView";
 
 function App() {
   const [loggedUser, setLoggedUser] = useState<UserLoginInfo>({
@@ -43,6 +44,15 @@ function App() {
             render={() => (
               <AuthenticatedRoute>
                 <HomeView />
+              </AuthenticatedRoute>
+            )}
+          />
+          <Route
+            exact
+            path={"/avail"}
+            render={() => (
+              <AuthenticatedRoute>
+                <AvailabilityView />
               </AuthenticatedRoute>
             )}
           />

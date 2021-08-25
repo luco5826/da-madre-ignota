@@ -33,9 +33,12 @@ const MainNavbar: React.FC<Props> = ({ handleLogout }) => {
       <Navbar.Collapse id="responsive-navbar-nav">
         {isLogged ? (
           <Nav className="ms-auto">
-            <Link to="/admin-page">
-              {/* Nav.Link does not work with react router's Link */}
-              <Nav.Item className="nav-link">Admin page</Nav.Item>
+            <Link to="/home">
+              {/* Nav.Link refreshes the page when redirecting */}
+              <Nav.Item className="nav-link">Prodotti</Nav.Item>
+            </Link>
+            <Link to="/avail">
+              <Nav.Item className="nav-link">Disponibilità</Nav.Item>
             </Link>
             <Link to="/">
               <Nav.Item onClick={handleNavbarLogout} className="nav-link">

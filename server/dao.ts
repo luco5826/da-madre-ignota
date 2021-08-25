@@ -2,18 +2,13 @@ import dayjs from "dayjs";
 import { Product, StoredProduct } from "./commonTypes";
 import db from "./database";
 
-type MenuEntry = {
-  id?: number;
-  name: string;
-  description: string;
-};
-
 type MenuAvailability = {
   id?: number;
   menu_id: number;
-  entry?: MenuEntry;
+  product?: StoredProduct;
   day: dayjs.Dayjs;
   quantity?: number;
+  hidden: boolean;
 };
 
 type UserInfos = {
@@ -28,18 +23,20 @@ type Order = {
   user: UserInfos;
 };
 
-const addMenuEntry = async (menuEntry: MenuEntry) => {
+const addMenuEntry = async (
+  product: Product
+): Promise<StoredProduct | undefined> => {
   const query = `
     INSERT INTO MENU(id, name, description) 
     VALUES(DEFAULT, $1, $2)
     RETURNING id
   `;
   const result = await db
-    .oneOrNone<{ id: number }>(query, [menuEntry.name, menuEntry.description])
+    .oneOrNone<{ id: number }>(query, [product.name, product.description])
     .catch(console.error);
 
-  menuEntry.id = result?.id;
-  return menuEntry;
+  if (result) return { ...product, id: result?.id };
+  else return undefined;
 };
 
 const addMenuAvailability = async (availability: MenuAvailability) => {
@@ -57,7 +54,8 @@ const addMenuAvailability = async (availability: MenuAvailability) => {
 
 const getAvailableMenu = async (
   fromDate: dayjs.Dayjs | undefined,
-  toDate: dayjs.Dayjs | undefined
+  toDate: dayjs.Dayjs | undefined,
+  includeHidden: boolean
 ) => {
   const today = dayjs();
   const query = `
@@ -65,6 +63,7 @@ const getAvailableMenu = async (
     FROM MENU_AVAILABILITY A
     JOIN MENU M ON M.id = A.menu_id
     WHERE day >= $1 AND day <= $2
+    AND M.deleted = false ${includeHidden ? "" : "AND A.hidden = false"}
   `;
   const result = await db
     .manyOrNone(query, [
@@ -73,16 +72,18 @@ const getAvailableMenu = async (
     ])
     .catch(console.error);
 
-  if (typeof result !== "undefined") {
+  if (result) {
     return result.map((row) => {
       return {
         id: row.id,
         day: dayjs(row.day),
-        entry: {
+        product: {
           id: row.menu_id,
           name: row.name,
           description: row.description,
         },
+        hidden: row.hidden,
+        quantity: row.quantity,
       };
     });
   } else {
@@ -90,8 +91,53 @@ const getAvailableMenu = async (
   }
 };
 
+const toggleHideAvailiability = async (
+  availiability: MenuAvailability
+): Promise<boolean> => {
+  const query = `
+  UPDATE MENU_AVAILABILITY
+  SET hidden = $1
+  WHERE id = $2
+`;
+
+  const result = await db
+    .none(query, [!availiability.hidden, availiability.id])
+    .catch(console.error);
+
+  return true;
+};
+const updateQuantity = async (
+  availiability: MenuAvailability
+): Promise<boolean> => {
+  const query = `
+  UPDATE MENU_AVAILABILITY
+  SET quantity = $1
+  WHERE id = $2
+`;
+
+  const result = await db
+    .none(query, [availiability.quantity || 0, availiability.id])
+    .catch(console.error);
+
+  return true;
+};
+const updateAvailabilityProduct = async (
+  availiability: MenuAvailability
+): Promise<boolean> => {
+  const query = `
+  UPDATE MENU_AVAILABILITY
+  SET menu_id = $1
+  WHERE id = $2
+`;
+
+  const result = await db
+    .none(query, [availiability.product?.id || 0, availiability.id])
+    .catch(console.error);
+
+  return true;
+};
 const getProducts = async () => {
-  const query = `SELECT * FROM MENU M`;
+  const query = `SELECT * FROM MENU M WHERE M.deleted = false`;
   return await db.manyOrNone(query).catch(console.error);
 };
 
@@ -156,7 +202,8 @@ const updateProduct = async (
 };
 const deleteProduct = async (product: StoredProduct): Promise<boolean> => {
   const query = `
-  DELETE FROM MENU
+  UPDATE MENU
+  SET deleted = true
   WHERE id = $1
 `;
 
@@ -170,6 +217,9 @@ export {
   getAvailableMenu,
   getProducts,
   addMenuAvailability,
+  toggleHideAvailiability,
+  updateQuantity,
+  updateAvailabilityProduct,
   placeOrder,
   saveProduct,
   updateProduct,

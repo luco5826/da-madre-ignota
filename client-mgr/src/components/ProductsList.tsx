@@ -4,7 +4,7 @@ import { BsPencil, BsPlusSquare, BsTrash } from "react-icons/bs";
 import API from "../API";
 import { StoredProduct } from "../commonTypes";
 import AddProductModal from "./AddProductModal";
-import DeleteProductModal from "./DeleteProductModal";
+import DeleteModal from "./DeleteModal";
 import EditProductModal from "./EditProductModal";
 
 function ProductsList() {
@@ -59,8 +59,10 @@ function ProductsList() {
                   ]);
                 }}
               />
-              <DeleteProductModal
+              <DeleteModal
                 show={showDeleteModal === p.id}
+                title="Elimina prodotto"
+                subtitle="Vuoi davvero eliminare questo prodotto?"
                 onHide={() => setShowDeleteModal(false)}
                 onDelete={() =>
                   API.deleteProduct(p).then(() => {

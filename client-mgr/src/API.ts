@@ -1,5 +1,7 @@
+import dayjs from "dayjs";
 import {
   Credentials,
+  MenuAvailability,
   Product,
   StoredProduct,
   UserLoginInfo,
@@ -80,6 +82,54 @@ const deleteProduct = async (product: StoredProduct): Promise<boolean> => {
   });
   return response.json();
 };
+
+const getAvailability = async () => {
+  const response = await fetch("/api/allavail");
+  const availability = await response.json();
+  return availability.map((a: MenuAvailability) => {
+    return { ...a, day: dayjs(a.day) };
+  });
+};
+const toggleHideAvailiability = async (
+  availability: MenuAvailability
+): Promise<boolean> => {
+  const response = await fetch("/api/avail", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(availability),
+  });
+  return response.json();
+};
+
+const updateQuantity = async (
+  availability: MenuAvailability,
+  newQuantity: number
+) => {
+  const response = await fetch("/api/avail/qty", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...availability, quantity: newQuantity }),
+  });
+  return response.json();
+};
+const updateAvailabilityProduct = async (
+  availability: MenuAvailability,
+  newProduct: StoredProduct
+) => {
+  const response = await fetch("/api/avail/prod", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...availability, product: newProduct }),
+  });
+  return response.json();
+};
+
 const API = {
   login,
   isLogged,
@@ -88,6 +138,10 @@ const API = {
   saveProduct,
   updateProduct,
   deleteProduct,
+  getAvailability,
+  toggleHideAvailiability,
+  updateQuantity,
+  updateAvailabilityProduct,
 };
 
 export default API;

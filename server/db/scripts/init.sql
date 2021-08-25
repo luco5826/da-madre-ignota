@@ -18,13 +18,16 @@ CREATE TABLE CUSTOMERS (
 CREATE TABLE MENU (
   id serial primary key not null,
   name varchar(30) not null,
-  description text
+  description text,
+  deleted boolean default false
 );
 CREATE TABLE MENU_AVAILABILITY(
   id serial not null primary key,
   menu_id int not null REFERENCES MENU(id),
   day date not null,
-  UNIQUE(id, day)
+  hidden boolean default false,
+  quantity int,
+  UNIQUE(menu_id, day)
 );
 CREATE TABLE ORDERS (
   customer_id int REFERENCES CUSTOMERS(id),

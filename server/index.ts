@@ -5,12 +5,14 @@ import session from "express-session";
 import passport from "passport";
 import * as dao from "./dao";
 import cors from "cors";
+import morgan from "morgan";
 
 const app = express();
 const PORT = 3000;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 
 app.use(
   session({
@@ -37,9 +39,20 @@ const isAuth = (
 };
 
 app.get("/api/avail", async (req, res) => {
-  res.json(await dao.getAvailableMenu(undefined, undefined));
+  res.json(await dao.getAvailableMenu(undefined, undefined, false));
 });
-
+app.get("/api/allavail", isAuth, async (req, res) => {
+  res.json(await dao.getAvailableMenu(undefined, undefined, true));
+});
+app.put("/api/avail", isAuth, async (req, res) => {
+  res.json(await dao.toggleHideAvailiability(req.body));
+});
+app.put("/api/avail/qty", isAuth, async (req, res) => {
+  res.json(await dao.updateQuantity(req.body));
+});
+app.put("/api/avail/prod", isAuth, async (req, res) => {
+  res.json(await dao.updateAvailabilityProduct(req.body));
+});
 app.post("/api/order", async (req, res) => {
   res.json(await dao.placeOrder(req.body));
 });

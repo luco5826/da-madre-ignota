@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 type UserLoginInfo = {
   isLogged: boolean;
   user: object;
@@ -17,4 +19,19 @@ interface StoredProduct extends Product {
   id: number;
 }
 
-export type { UserLoginInfo, Credentials, Product, StoredProduct };
+interface MenuAvailability {
+  id?: number;
+  menu_id: number;
+  product?: StoredProduct;
+  day: dayjs.Dayjs;
+  quantity?: number;
+  hidden: boolean;
+}
+
+export type {
+  UserLoginInfo,
+  Credentials,
+  Product,
+  StoredProduct,
+  MenuAvailability,
+};
