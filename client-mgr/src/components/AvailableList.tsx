@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import Calendar from "react-calendar";
@@ -18,10 +19,30 @@ function AvailableList() {
     API.getProducts().then(setProducts);
   }, []);
 
-  const updateElement = (availability: MenuAvailability) => {
+  const updateElement = (newAvailability: MenuAvailability) => {
     setAvailability((old) =>
-      old.map((a) => (a.id === availability.id ? availability : { ...a }))
+      old.map((a) =>
+        a.id === newAvailability.id || a.id === -1 ? newAvailability : { ...a }
+      )
     );
+  };
+  const onAddNewAvailability = () => {
+    // Do not add a new availability if there's still one to be added left
+    if (availability.filter((a) => a.id === -1).length !== 0) {
+      return;
+    }
+    setAvailability((old) => {
+      return [
+        ...old,
+        {
+          id: -1,
+          day: dayjs(selectedDate),
+          hidden: false,
+          quantity: 0,
+          menu_id: -1,
+        },
+      ];
+    });
   };
 
   return (
@@ -45,7 +66,7 @@ function AvailableList() {
         </thead>
         <tbody>
           {availability
-            .filter((a) => a.day.isSame(selectedDate))
+            .filter((a) => a.day.isSame(selectedDate, "day"))
             .map((a) => (
               <AvailableListEntry
                 key={a.id}
@@ -56,8 +77,10 @@ function AvailableList() {
             ))}
           <tr>
             <td colSpan={3} align="center">
-              {/* TODO: Add button onClick */}
-              <Button className="d-flex align-items-center">
+              <Button
+                className="d-flex align-items-center"
+                onClick={onAddNewAvailability}
+              >
                 <BsPlusSquare className="me-2" color="white" size={24} />
                 Aggiungi
               </Button>

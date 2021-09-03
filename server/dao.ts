@@ -41,15 +41,21 @@ const addMenuEntry = async (
 
 const addMenuAvailability = async (availability: MenuAvailability) => {
   const query = `
-    INSERT INTO MENU_AVAILABILITY(id, menu_id, day) 
-    VALUES(DEFAULT, $1, $2)
+    INSERT INTO MENU_AVAILABILITY(id, menu_id, day, hidden, quantity) 
+    VALUES(DEFAULT, $1, $2, $3, $4)
     RETURNING id
   `;
+  console.log(dayjs(availability.day));
+
   const result = await db
-    .oneOrNone<{ id: number }>(query, [availability.menu_id, availability.day])
+    .oneOrNone<{ id: number }>(query, [
+      availability.menu_id,
+      dayjs(availability.day),
+      availability.hidden,
+      availability.quantity,
+    ])
     .catch(console.error);
-  availability.id = result?.id;
-  return availability;
+  return result?.id!;
 };
 
 const getAvailableMenu = async (

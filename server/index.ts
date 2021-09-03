@@ -47,6 +47,9 @@ app.get("/api/allavail", isAuth, async (req, res) => {
 app.put("/api/avail", isAuth, async (req, res) => {
   res.json(await dao.toggleHideAvailiability(req.body));
 });
+app.post("/api/avail", isAuth, async (req, res) => {
+  res.json(await dao.addMenuAvailability(req.body));
+});
 app.put("/api/avail/qty", isAuth, async (req, res) => {
   res.json(await dao.updateQuantity(req.body));
 });

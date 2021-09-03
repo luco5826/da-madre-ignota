@@ -129,6 +129,19 @@ const updateAvailabilityProduct = async (
   });
   return response.json();
 };
+const createAvailability = async (
+  availability: MenuAvailability
+): Promise<number> => {
+  const response = await fetch("/api/avail", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...availability }),
+  });
+
+  return response.json();
+};
 
 const API = {
   login,
@@ -142,6 +155,7 @@ const API = {
   toggleHideAvailiability,
   updateQuantity,
   updateAvailabilityProduct,
+  createAvailability,
 };
 
 export default API;

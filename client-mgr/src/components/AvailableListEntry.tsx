@@ -14,7 +14,8 @@ const AvailableListEntry: React.FC<Props> = ({
   products,
   onUpdateComplete,
 }) => {
-  const [editMode, setEditMode] = useState<boolean>(false);
+  // Newly added availabilities are in edit mode by default
+  const [editMode, setEditMode] = useState<boolean>(availability.id! === -1);
   const [newQuantity, setNewQuantity] = useState<number>(0);
   const [newProduct, setNewProduct] = useState<StoredProduct | undefined>(
     undefined
@@ -32,6 +33,18 @@ const AvailableListEntry: React.FC<Props> = ({
   };
 
   const saveAvailability = async () => {
+    if (availability.id === -1 && newProduct !== undefined) {
+      const newAvailability: MenuAvailability = {
+        ...availability,
+        quantity: newQuantity,
+        menu_id: newProduct.id,
+        product: newProduct,
+      };
+      newAvailability.id = await API.createAvailability(newAvailability);
+      onUpdateComplete(newAvailability);
+      return;
+    }
+
     if (newQuantity === availability.quantity || newQuantity < 0) {
       setNewQuantity(0);
       setEditMode(false);
@@ -82,7 +95,12 @@ const AvailableListEntry: React.FC<Props> = ({
     >
       <td className="text-break" style={{ minWidth: "100px" }}>
         {editMode ? (
-          <select onChange={changeProduct}>
+          <select onChange={changeProduct} defaultValue={-1}>
+            {availability.id === -1 && (
+              <option key={-1} value={-1} disabled>
+                Seleziona un prodotto
+              </option>
+            )}
             {products.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
