@@ -17,9 +17,9 @@
         <CartAdder
           entryName={type === "product"
             ? formatDayEntry(availableElement.day)
-            : availableElement.entry.name}
-          entryDescription={availableElement.entry.description}
-          quantity={availableElement.quantity}
+            : availableElement.product.name}
+          entryDescription={availableElement.product.description}
+          quantity={availableElement.requestedQuantity}
           onQuantityChange={(qty) =>
             onBaseQuantityChange(availableElement, qty)}
         />

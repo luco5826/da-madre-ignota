@@ -26,16 +26,16 @@ function groupByDay(avail) {
 
 function groupByProduct(avail) {
   return avail.reduce((result, element) => {
-    if (result[element.entry.name] === undefined)
-      result[element.entry.name] = [];
-    result[element.entry.name].push(element);
+    if (result[element.product.name] === undefined)
+      result[element.product.name] = [];
+    result[element.product.name].push(element);
     return result;
   }, {});
 }
 
 function formatDayEntry(dayEntry) {
   return `
-  ${daysOfWeek[dayjs(dayEntry).day()]} - 
+  ${daysOfWeek[dayjs(dayEntry).day() - 1]} - 
   ${dayjs(dayEntry).format("DD/MM")}`;
 }
 

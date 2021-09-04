@@ -25,20 +25,20 @@
 
   function changeQuantity(element, quantity) {
     const found = menuAvail.find((o) => o.id === element.id);
-    found.quantity = quantity;
+    found.requestedQuantity = quantity;
     menuAvail = [...menuAvail];
   }
   async function onCompleteOrder(userInfos) {
     showModal = false;
 
-    await API.sendOrder({ products: menuAvail, user: userInfos });
+    await API.sendOrder({ availabilities: menuAvail, user: userInfos });
 
     showAlert = true;
     setTimeout(() => location.reload(), 2000);
   }
 
   // Show cart icon whenever there's at least something in the cart
-  $: showCartIcon = menuAvail.filter((m) => m.quantity > 0).length > 0;
+  $: showCartIcon = menuAvail.filter((m) => m.requestedQuantity > 0).length > 0;
 </script>
 
 <main>

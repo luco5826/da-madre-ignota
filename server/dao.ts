@@ -19,7 +19,7 @@ type UserInfos = {
 };
 
 type Order = {
-  products: MenuAvailability[];
+  availabilities: MenuAvailability[];
   user: UserInfos;
 };
 
@@ -45,7 +45,6 @@ const addMenuAvailability = async (availability: MenuAvailability) => {
     VALUES(DEFAULT, $1, $2, $3, $4)
     RETURNING id
   `;
-  console.log(dayjs(availability.day));
 
   const result = await db
     .oneOrNone<{ id: number }>(query, [
@@ -159,13 +158,13 @@ const placeOrder = async (order: Order) => {
 
   // Insert orders in a transaction
   await db.tx(async (transaction) => {
-    const queries = order.products
-      .filter((p) => p.quantity !== undefined && p.quantity > 0)
-      .map((product) => {
+    const queries = order.availabilities
+      .filter((a) => a.quantity !== undefined && a.quantity > 0)
+      .map((availability) => {
         return transaction.none(
           `INSERT INTO ORDERS(customer_id, avail_id, quantity) 
           VALUES($1, $2, $3)`,
-          [userResult.id, product.id, product.quantity]
+          [userResult.id, availability.id, availability.quantity]
         );
       });
     return transaction.batch(queries);

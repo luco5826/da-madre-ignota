@@ -24,7 +24,7 @@ CREATE TABLE MENU (
 CREATE TABLE MENU_AVAILABILITY(
   id serial not null primary key,
   menu_id int not null REFERENCES MENU(id),
-  day date not null,
+  day timestamptz not null,
   hidden boolean default false,
   quantity int,
   UNIQUE(menu_id, day)
