@@ -40,6 +40,9 @@ const MainNavbar: React.FC<Props> = ({ handleLogout }) => {
             <Link to="/avail">
               <Nav.Item className="nav-link">Disponibilità</Nav.Item>
             </Link>
+            <Link to="/orders">
+              <Nav.Item className="nav-link">Ordini</Nav.Item>
+            </Link>
             <Link to="/">
               <Nav.Item onClick={handleNavbarLogout} className="nav-link">
                 Logout

@@ -145,26 +145,106 @@ const getProducts = async () => {
   const query = `SELECT * FROM MENU M WHERE M.deleted = false`;
   return await db.manyOrNone(query).catch(console.error);
 };
+const getOrders = async (
+  fromDate: dayjs.Dayjs | undefined,
+  toDate: dayjs.Dayjs | undefined
+): Promise<Order[] | undefined> => {
+  const today = dayjs();
+
+  const query = `
+    SELECT C.*, O.*, A.DAY, A.MENU_ID, M.ID AS PRODUCT_ID, M.NAME AS PRODUCT_NAME, M.DESCRIPTION
+    FROM ORDERS O 
+    JOIN MENU_AVAILABILITY A ON A.ID = O.AVAIL_ID 
+    JOIN MENU M ON M.ID = A.MENU_ID 
+    JOIN CUSTOMERS C ON C.ID = O.CUSTOMER_ID
+    WHERE day >= $1 AND day <= $2
+    ORDER BY id;
+  `;
+  const results = await db
+    .manyOrNone(query, [
+      fromDate || today,
+      toDate || (fromDate || today).add(10, "day"),
+    ])
+    .catch(console.error);
+
+  if (results)
+    return results.reduce((acc: Order[], entry) => {
+      const index = acc.findIndex((e) => e.user.email === entry.email);
+      if (index === -1) {
+        acc.push({
+          user: {
+            id: entry.id,
+            name: entry.name,
+            email: entry.email,
+            phone: entry.phone_no,
+          },
+          availabilities: [
+            {
+              id: entry.avail_id,
+              day: dayjs(entry.day),
+              quantity: entry.quantity,
+              hidden: false,
+              menu_id: entry.menu_id,
+              product: {
+                id: entry.product_id,
+                name: entry.product_name,
+                description: entry.description,
+              },
+            },
+          ],
+        });
+      } else {
+        acc[index].availabilities.push({
+          id: entry.avail_id,
+          day: dayjs(entry.day),
+          quantity: entry.quantity,
+          hidden: false,
+          menu_id: entry.menu_id,
+          product: {
+            id: entry.product_id,
+            name: entry.product_name,
+            description: entry.description,
+          },
+        });
+      }
+      return acc;
+    }, []);
+};
 
 const placeOrder = async (order: Order) => {
-  // Insert the customer
-  // TODO: Do not insert customer if it already exists
-  const userResult = await db.one<{ id: number }>(
-    `INSERT INTO CUSTOMERS(id, name, phone_no, email) 
-    VALUES(DEFAULT, $1, $2, $3) 
-    RETURNING id`,
-    [order.user.name, order.user.phone, order.user.email]
+  // Insert the customer if it does not exist yet
+  const fetchedUser = await db.oneOrNone(
+    `
+    SELECT *
+    FROM CUSTOMERS
+    WHERE email = $1 AND phone_no = $2`,
+    [order.user.email, order.user.phone]
   );
+
+  let userID = -1;
+  if (fetchedUser) {
+    userID = fetchedUser.id;
+  } else {
+    const userResult = await db.one<{ id: number }>(
+      `INSERT INTO CUSTOMERS(id, name, phone_no, email) 
+      VALUES(DEFAULT, $1, $2, $3) 
+      RETURNING id`,
+      [order.user.name, order.user.phone, order.user.email]
+    );
+    userID = userResult.id;
+  }
 
   // Insert orders in a transaction
   await db.tx(async (transaction) => {
     const queries = order.availabilities
       .filter((a) => a.quantity !== undefined && a.quantity > 0)
       .map((availability) => {
+        // Insert the order but if the order is already present just update the quantity
         return transaction.none(
           `INSERT INTO ORDERS(customer_id, avail_id, quantity) 
-          VALUES($1, $2, $3)`,
-          [userResult.id, availability.id, availability.quantity]
+          VALUES($1, $2, $3)
+          ON CONFLICT (customer_id, avail_id) DO UPDATE SET quantity = ORDERS.quantity + EXCLUDED.quantity;`,
+          [userID, availability.id, availability.quantity]
         );
       });
     return transaction.batch(queries);
@@ -226,6 +306,7 @@ export {
   updateQuantity,
   updateAvailabilityProduct,
   placeOrder,
+  getOrders,
   saveProduct,
   updateProduct,
   deleteProduct,

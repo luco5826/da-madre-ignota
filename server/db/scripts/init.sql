@@ -32,7 +32,8 @@ CREATE TABLE MENU_AVAILABILITY(
 CREATE TABLE ORDERS (
   customer_id int REFERENCES CUSTOMERS(id),
   avail_id int REFERENCES MENU_AVAILABILITY(id),
-  quantity int
+  quantity int,
+  PRIMARY KEY (customer_id, avail_id)
 );
 -- base credentials: admin, password
 INSERT INTO USERS(id, username, hash, salt)

@@ -56,6 +56,11 @@ app.put("/api/avail/qty", isAuth, async (req, res) => {
 app.put("/api/avail/prod", isAuth, async (req, res) => {
   res.json(await dao.updateAvailabilityProduct(req.body));
 });
+
+app.get("/api/orders", async (req, res) => {
+  res.json(await dao.getOrders(undefined, undefined));
+});
+
 app.post("/api/order", async (req, res) => {
   res.json(await dao.placeOrder(req.body));
 });

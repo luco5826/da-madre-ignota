@@ -30,8 +30,12 @@
   }
   async function onCompleteOrder(userInfos) {
     showModal = false;
-
-    await API.sendOrder({ availabilities: menuAvail, user: userInfos });
+    await API.sendOrder({
+      availabilities: menuAvail.map((a) => {
+        return { ...a, quantity: a.requestedQuantity };
+      }),
+      user: userInfos,
+    });
 
     showAlert = true;
     setTimeout(() => location.reload(), 2000);

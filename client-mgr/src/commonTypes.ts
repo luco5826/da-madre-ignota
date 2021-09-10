@@ -19,6 +19,11 @@ interface StoredProduct extends Product {
   id: number;
 }
 
+interface OrderedProduct extends StoredProduct {
+  quantity: number;
+  day: dayjs.Dayjs;
+}
+
 interface MenuAvailability {
   id?: number;
   menu_id: number;
@@ -28,10 +33,24 @@ interface MenuAvailability {
   hidden: boolean;
 }
 
+type UserInfos = {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+};
+type Order = {
+  availabilities: MenuAvailability[];
+  user: UserInfos;
+};
+
 export type {
   UserLoginInfo,
   Credentials,
   Product,
   StoredProduct,
+  OrderedProduct,
   MenuAvailability,
+  UserInfos,
+  Order,
 };

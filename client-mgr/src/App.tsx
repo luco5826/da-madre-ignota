@@ -8,6 +8,7 @@ import API from "./API";
 import { UserLoginInfo } from "./commonTypes";
 import HomeView from "./views/HomeView";
 import AvailabilityView from "./views/AvailabilityView";
+import OrdersView from "./views/OrdersView";
 
 function App() {
   const [loggedUser, setLoggedUser] = useState<UserLoginInfo>({
@@ -53,6 +54,15 @@ function App() {
             render={() => (
               <AuthenticatedRoute>
                 <AvailabilityView />
+              </AuthenticatedRoute>
+            )}
+          />
+          <Route
+            exact
+            path={"/orders"}
+            render={() => (
+              <AuthenticatedRoute>
+                <OrdersView />
               </AuthenticatedRoute>
             )}
           />

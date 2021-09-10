@@ -2,13 +2,13 @@ import dayjs from "dayjs";
 
 // TODO: L10n independent
 const daysOfWeek = [
+  "Domenica",
   "Lunedi",
   "Martedi",
   "Mercoledi",
   "Giovedi",
   "Venerdi",
   "Sabato",
-  "Domenica",
 ];
 
 /**
@@ -35,7 +35,7 @@ function groupByProduct(avail) {
 
 function formatDayEntry(dayEntry) {
   return `
-  ${daysOfWeek[dayjs(dayEntry).day() - 1]} - 
+  ${daysOfWeek[dayjs(dayEntry).day()]} - 
   ${dayjs(dayEntry).format("DD/MM")}`;
 }
 

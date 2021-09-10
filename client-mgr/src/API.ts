@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import {
   Credentials,
   MenuAvailability,
+  Order,
   Product,
   StoredProduct,
   UserLoginInfo,
@@ -48,6 +49,16 @@ const logout = async () => {
 const getProducts = async () => {
   const response = await fetch("/api/products");
   return response.json();
+};
+
+const getOrders = async () => {
+  const response = await fetch("/api/orders");
+  const orders = await response.json();
+  // Parse each availability day as dayjs
+  orders.forEach((o: Order) => {
+    o.availabilities.forEach((a: MenuAvailability) => (a.day = dayjs(a.day)));
+  });
+  return orders;
 };
 
 const saveProduct = async (newProd: Product): Promise<StoredProduct> => {
@@ -148,6 +159,7 @@ const API = {
   isLogged,
   logout,
   getProducts,
+  getOrders,
   saveProduct,
   updateProduct,
   deleteProduct,
