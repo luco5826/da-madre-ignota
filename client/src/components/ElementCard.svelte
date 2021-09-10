@@ -9,9 +9,11 @@
   export let isOpen = false;
 </script>
 
-<Card class="mt-4" color="dark">
-  <CardBody class="text-white fs-4 p-1">
-    <div class="p-2" on:click={() => (isOpen = !isOpen)}>{title}</div>
+<Card class="mt-4">
+  <CardBody class="fs-4 p-1">
+    <div class="p-2 custom-card" on:click={() => (isOpen = !isOpen)}>
+      {title}
+    </div>
     <Collapse {isOpen}>
       {#each availList as availableElement}
         <CartAdder
@@ -29,4 +31,10 @@
 </Card>
 
 <style>
+  .custom-card {
+    background-color: var(--darker-color);
+    color: var(--light-color);
+    font-family: "Dancing Script", cursive;
+    font-size: 2rem;
+  }
 </style>

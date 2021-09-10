@@ -1,8 +1,70 @@
+body,
+html {
+  height: 100%;
+  padding: 4px;
+  margin-bottom: 80px;
+}
+
+body {
+  background: url("/bakery-bg.jpg") no-repeat fixed center;
+  background-size: cover;
+  --light-color: #f0d7a7;
+  --lighter-color: 238, 225, 186;
+  --dark-color: #c37960;
+  --darker-color: #9c634f;
+  --darkest-color: #894e3f;
+}
+
 .nav-tabs{
   display: flex;
   justify-content: space-around;
 }
 
+.nav-tabs .nav-item {
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border: none;
+  width: 50%;
+  text-align: center;
+} 
+.nav-tabs .nav-link.active {
+  background-color: var(--darker-color);
+  color: var(--light-color);
+  border: none;
+  text-align: center;  
+} 
+.nav-link {
+  color:var(--dark-color);
+}
+
 * {
   user-select: none;
 }
+
+.card {
+  background-color: var(--darkest-color);
+}
+.inner-card {
+  font-family: 'Roboto';
+  background-color: var(--light-color);
+  color: var(--darker-color);
+}
+ .btn-primary,
+.btn-primary:hover,
+.btn-primary:visited,
+.btn-primary:focus,
+.btn-primary:focus-visible,
+.btn-primary:focus-within {
+  background-color: var(--darkest-color);
+  border: none;
+}
+.btn-secondary, .btn:disabled {
+  background-color: var(--dark-color);
+  border: none;
+}
+.modal-content {
+  background-color: var(--light-color);
+  color: var(--darkest-color);
+}
+.modal-header {border-bottom: solid 1px var(--dark-color);}
+.modal-footer {border-top: solid 1px var(--dark-color);}

@@ -109,22 +109,26 @@
     padding: 1em;
     margin: 0 auto;
     height: 100%;
+    background-color: rgba(var(--lighter-color), 0.7);
   }
 
   h1 {
     font-size: 2rem;
     text-transform: uppercase;
-    font-weight: 100;
+    font-weight: 300;
+    color: var(--darkest-color);
+    font-family: "Dancing Script", cursive;
+    background-color: rgba(var(--lighter-color), 1.6);
   }
   .cart-button {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background-color: var(--bs-blue);
+    background-color: var(--darker-color);
     color: white;
     width: 60px;
     border-radius: 50%;
     padding: 10px;
-    box-shadow: 4px 4px 20px 3px darkgray;
+    box-shadow: 4px 4px 20px 3px black;
   }
 </style>

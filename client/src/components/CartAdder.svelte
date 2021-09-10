@@ -11,17 +11,17 @@
   }
 </script>
 
-<Card color="secondary" class="text-start fs-5 m-2">
+<Card class="text-start fs-5 m-2 inner-card">
   <CardBody class="d-flex align-items-center justify-content-between">
     <span style="max-width: 60%;">{entryName}</span>
     <div>
       <Button
+        color="primary"
         disabled={quantity === 0}
-        on:click={() => handleClick(-1)}
-        color="dark">-</Button
+        on:click={() => handleClick(-1)}>-</Button
       >
       <span>{quantity}</span>
-      <Button on:click={() => handleClick(+1)} color="dark">+</Button>
+      <Button color="primary" on:click={() => handleClick(+1)}>+</Button>
     </div>
   </CardBody>
   {#if entryDescription !== undefined}
