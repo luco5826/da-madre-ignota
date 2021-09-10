@@ -10,8 +10,16 @@ interface EntryProps {
 const OrdersByProductEntry: React.FC<EntryProps> = ({ order, product }) => {
   return (
     <tr key={order.user.id}>
-      <td>{order.user.id}</td>
-      <td>{order.user.email}</td>
+      <td>{order.user.name}</td>
+      <td>
+        <details>
+          <summary>Mostra</summary>
+          <ul>
+            <li>{order.user.email}</li>
+            <li>{order.user.phone}</li>
+          </ul>
+        </details>
+      </td>
       <td>
         {
           order.availabilities.find(
@@ -39,7 +47,7 @@ const OrdersByProduct: React.FC<Props> = ({ orders, product }) => {
         </tr>
         <tr>
           <th>UserID</th>
-          <th>Email</th>
+          <th>Contatti</th>
           <th>Qtà</th>
         </tr>
       </thead>
